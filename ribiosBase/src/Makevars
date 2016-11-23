@@ -1,1 +1,4 @@
 PKG_CFLAGS=-I../inst/include
+
+# ../inst/lib/ribiosBase.a: gabigif.o gaffyfileHandler.o algutil.o alphatrans.o arg.o array.o avlTree.o binalgparser.o bitmap.o biurl.o blastdb.o blastparser.o blastrun.o chemutil.o chtoken.o clientserverObject.o combi.o eval.o fastgenewise.o forest.o format.o fuzzparser.o geometry.o gif.o graphalgo.o graphics.o hash.o hierclus.o hlrclock.o hlrmisc.o hmmparser.o html.o htmlfile.o htmlform.o http.o
+#	ar rcs ../inst/lib/ribiosBase.a *.o
