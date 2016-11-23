@@ -19,7 +19,11 @@
     Module prefix ident_
 */
 #include <pwd.h>
-#include <crypt.h>
+#ifdef __APPLE__
+  #include <unistd.h>
+#else
+  #include <crypt.h>
+#endif
 #include "log.h"
 #include "format.h"
 #include "rofutil.h"
