@@ -8,3 +8,5 @@
 *.Rcheck
 .Rproj.user
 ribios.Rproj
+.Rbuildignore
+*.Rproj
