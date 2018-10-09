@@ -2,6 +2,8 @@ library(ribiosNGS)
 library(ribiosGSEA)
 library(ribiosUtils)
 
+context("voomCamera")
+
 mat <- matrix(c(10,3,5,9,3,5,
                 2,4,8,12,9,9,
                 3,5,7,5,4,4,
