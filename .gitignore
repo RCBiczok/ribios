@@ -1,7 +1,6 @@
 *.o
 *.RData
 *.so
-*.rds
 *~
 .Rhistory
 *.tar.gz
