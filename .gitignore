@@ -1,10 +1,11 @@
 *.o
 *.RData
 *.so
-*.rds
 *~
 .Rhistory
 *.tar.gz
 *.Rcheck
 .Rproj.user
 ribios.Rproj
+.Rbuildignore
+*.Rproj

@@ -1,0 +1,4 @@
+"posCount"	"negCount"	"posnegCount"	"all"
+"DHQ_Inactive_24h"	45	1	46	13605
+"DHQ_Active_24h"	89	133	222	13605
+"DHQ_ActiveVSInactive_24h"	47	243	290	13605

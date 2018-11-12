@@ -71,7 +71,7 @@ hasNoReplicate <- function(edgeObj) {
 #' 
 #' @param edgeObj An EdgeObject object
 #' @param minCPM Minimal CPM value, see descriptions below
-#' @param mintCount Minimal count of samples in which the CPM value is no less than \code{minCPM}
+#' @param minCount Minimal count of samples in which the CPM value is no less than \code{minCPM}
 #' 
 #' The filter is recommended by the authors of the \code{edgeR} package to remove lowly expressed genes, since including them in differential gene expression analysis will cause extreme differential expression fold-changes of lowly and stochastically expressed genes, and increase false positive rates.
 #' 
@@ -351,47 +351,45 @@ isSigNeg <- function(data.frame, sigFilter) {
        logFC <= negLogFC(sigFilter) & logCPM>=logCPM(sigFilter) & LR>=LR(sigFilter) & PValue <= pValue(sigFilter) & FDR <= FDR(sigFilter))
 }
 
-## TODO: fix: add InputFeature
-sigGene <- function(edgeResult, contrast) {
+sigGeneImpl <- function(edgeResult, contrast, inputFeature="GeneID", testFun) {
   tbl <- dgeTable(edgeResult, contrast)
   sf <- sigFilter(edgeResult)
-  issig <- isSig(tbl, sf)
-  tbl$GeneID[issig]
+  issig <- testFun(tbl, sf)
+  tbl[[inputFeature]][issig]
 }
-sigPosGene <- function(edgeResult, contrast) {
-  tbl <- dgeTable(edgeResult, contrast)
-  sf <- sigFilter(edgeResult)
-  issig <- isSigPos(tbl, sf)
-  tbl$GeneID[issig]
+
+sigGene <- function(edgeResult, contrast, inputFeature="GeneID") {
+  sigGeneImpl(edgeResult, contrast, inputFeature, isSig)
 }
-sigNegGene <- function(edgeResult, contrast) {
-  tbl <- dgeTable(edgeResult, contrast)
-  sf <- sigFilter(edgeResult)
-  issig <- isSigNeg(tbl, sf)
-  tbl$GeneID[issig]
+
+sigPosGene <- function(edgeResult, contrast, inputFeature="GeneID") {
+  sigGeneImpl(edgeResult, contrast, inputFeature, isSigPos)
 }
-sigGenes <- function(edgeResult) {
+
+sigNegGene <- function(edgeResult, contrast, inputFeature="GeneID") {
+  sigGeneImpl(edgeResult, contrast, inputFeature, isSigNeg)
+}
+
+sigGenesImpl <- function(edgeResult, inputFeature="GeneID", sigGeneFun) {
   cs <- contrastNames(edgeResult)
-  res <- lapply(cs, function(x) sigGene(edgeResult, x))
+  res <- lapply(cs, function(x) sigGeneFun(edgeResult, x, inputFeature))
   names(res) <- cs
   return(res)
 }
-sigPosGenes <- function(edgeResult) {
-  cs <- contrastNames(edgeResult)
-  res <- lapply(cs, function(x) sigPosGene(edgeResult, x))
-  names(res) <- cs
-  return(res)
+
+sigGenes <- function(edgeResult, inputFeature="GeneID") {
+  sigGenesImpl(edgeResult, inputFeature, sigGene)
 }
-sigNegGenes <- function(edgeResult) {
-  cs <- contrastNames(edgeResult)
-  res <- lapply(cs, function(x) sigNegGene(edgeResult, x))
-  names(res) <- cs
-  return(res)
+sigPosGenes <- function(edgeResult, inputFeature="GeneID") {
+  sigGenesImpl(edgeResult, inputFeature, sigPosGene)
 }
-sigGeneCounts <- function(edgeResult) {
+sigNegGenes <- function(edgeResult, inputFeature="GeneID") {
+  sigGenesImpl(edgeResult, inputFeature, sigNegGene)
+}
+sigGeneCounts <- function(edgeResult, inputFeature="GeneID") {
   allCount <- geneCount(edgeResult)
-  posCounts <- sapply(sigPosGenes(edgeResult), ulen)
-  negCounts <- sapply(sigNegGenes(edgeResult), ulen)
+  posCounts <- sapply(sigPosGenes(edgeResult, inputFeature), ulen)
+  negCounts <- sapply(sigNegGenes(edgeResult, inputFeature), ulen)
   total <- posCounts+negCounts
   res <- data.frame(posCount=posCounts,
                     negCount=negCounts,
